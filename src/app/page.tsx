@@ -1,8 +1,43 @@
 import Image from "next/image";
 
 export default function Home() {
+
+   const handleScroll = () => {
+    if (previewRef.current) {
+      const { scrollTop, clientHeight, scrollHeight } = previewRef.current;
+      if (scrollTop + clientHeight >= scrollHeight - 5) {
+        loadMoreItems();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const previewDiv = previewRef.current;
+    if (previewDiv) {
+      previewDiv.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+      if (previewDiv) {
+        previewDiv.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, []);
+
+  
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+       <div
+        id="preview"
+        ref={previewRef}
+        style={{ height: '400px', overflowY: 'auto', border: '1px solid #ccc' }}
+      >
+        {items.map((item, index) => (
+          <div key={index} style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>
+            {item}
+          </div>
+        ))}
+        {loading && <div style={{ padding: '10px' }}>Loading...</div>}
+      </div>
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
           Get started by editing&nbsp;
